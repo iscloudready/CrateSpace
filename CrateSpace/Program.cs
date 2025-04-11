@@ -6,6 +6,7 @@ using CrateSpace.Interfaces;
 using CrateSpace.Repositories;
 using CrateSpace.Services;
 using System.Text.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 // Configure logging
 builder.Logging.ClearProviders();
