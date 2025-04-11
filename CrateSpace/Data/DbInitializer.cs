@@ -8,19 +8,19 @@ namespace CrateSpace.Data
 {
     public static class DbInitializer
     {
-        public static async Task InitializeAsync(InsightOpsDbContext context, ILogger logger)
+        public static async Task InitializeAsync(cratespaceDbContext context, ILogger logger)
         {
             try
             {
                 // Create schema and set search path
-                await context.Database.ExecuteSqlRawAsync("CREATE SCHEMA IF NOT EXISTS insightops;");
-                await context.Database.ExecuteSqlRawAsync("SET search_path TO insightops,public;");
+                await context.Database.ExecuteSqlRawAsync("CREATE SCHEMA IF NOT EXISTS cratespace;");
+                await context.Database.ExecuteSqlRawAsync("SET search_path TO cratespace,public;");
 
                 // Only try to create the migrations history table once
                 try
                 {
                     await context.Database.ExecuteSqlRawAsync(@"
-                    CREATE TABLE IF NOT EXISTS insightops.__EFMigrationsHistory (
+                    CREATE TABLE IF NOT EXISTS cratespace.__EFMigrationsHistory (
                         MigrationId character varying(150) NOT NULL,
                         ProductVersion character varying(32) NOT NULL,
                         CONSTRAINT PK___EFMigrationsHistory PRIMARY KEY (MigrationId)
@@ -136,7 +136,7 @@ namespace CrateSpace.Data
             }
         }
 
-        private static async Task EnsureTableExists(InsightOpsDbContext context, string tableName, ILogger logger)
+        private static async Task EnsureTableExists(cratespaceDbContext context, string tableName, ILogger logger)
         {
             try
             {

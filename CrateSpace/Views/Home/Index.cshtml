@@ -1,24 +1,12 @@
-﻿// Views/Home/Index.cshtml
-@model CrateSpace.Models.ViewModels.DashboardViewModel
-@
-{
-
-    ViewData
-[
-"Title"
-]
- 
-=
- 
-"Dashboard"
-;
-
+﻿@using cratespace.Monolith.Models.ViewModels
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-
 <div class="text-center">
-    <h1 class="display-4">InsightOps Dashboard</h1>
-    <p>Monolithic version of the InsightOps application.</p>
+    <h1 class="display-4">cratespace Dashboard</h1>
+    <p>Monolithic version of the cratespace application.</p>
 </div>
 
 <div class="row">
@@ -106,8 +94,8 @@
                                     <td>@alert.CurrentQuantity</td>
                                     <td>@alert.MinimumQuantity</td>
                                     <td>
-                                        <span class="badge @(alert.AlertLevel == "Critical" ? "bg-danger" : 
-                                                             alert.AlertLevel == "High" ? "bg-warning text-dark" : 
+                                        <span class="badge @(alert.AlertLevel == "Critical" ? "bg-danger" :
+                                                             alert.AlertLevel == "High" ? "bg-warning text-dark" :
                                                              "bg-info text-dark")">
                                             @alert.AlertLevel
                                         </span>
@@ -148,8 +136,8 @@
                                     <td>@order.ItemName</td>
                                     <td>@order.Quantity</td>
                                     <td>
-                                        <span class="badge @(order.Status == "Completed" ? "bg-success" : 
-                                                           order.Status == "Cancelled" ? "bg-danger" : 
+                                        <span class="badge @(order.Status == "Completed" ? "bg-success" :
+                                                           order.Status == "Cancelled" ? "bg-danger" :
                                                            "bg-warning text-dark")">
                                             @order.Status
                                         </span>

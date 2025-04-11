@@ -1,4 +1,4 @@
-﻿namespace InsightOps.Monolith.Models.ViewModels
+﻿namespace cratespace.Monolith.Models.ViewModels
 {
     public class HealthStatusViewModel
     {

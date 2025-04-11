@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using InsightOps.Monolith.Models.ViewModels;
+using cratespace.Monolith.Models.ViewModels;
 
-namespace InsightOps.Monolith.Controllers
+namespace cratespace.Monolith.Controllers
 {
     public class ServiceHealthController : Controller
     {

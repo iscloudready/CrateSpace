@@ -172,5 +172,19 @@ namespace CrateSpace.Services
                 throw;
             }
         }
+
+        public async Task<InventoryItem?> GetItemByNameAsync(string name)
+        {
+            try
+            {
+                _logger.LogInformation("Retrieving inventory item by name: {ItemName}", name);
+                return await _inventoryRepository.GetItemByNameAsync(name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving inventory item by name: {ItemName}", name);
+                throw;
+            }
+        }
     }
 }

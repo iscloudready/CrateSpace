@@ -8,10 +8,10 @@ namespace CrateSpace.Repositories
 {
     public class InventoryRepository : IInventoryRepository
     {
-        private readonly InsightOpsDbContext _context;
+        private readonly cratespaceDbContext _context;
         private readonly ILogger<InventoryRepository> _logger;
 
-        public InventoryRepository(InsightOpsDbContext context, ILogger<InventoryRepository> logger)
+        public InventoryRepository(cratespaceDbContext context, ILogger<InventoryRepository> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

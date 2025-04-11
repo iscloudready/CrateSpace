@@ -5,13 +5,13 @@ using CrateSpace.Models.Order;
 
 namespace CrateSpace.Data
 {
-    public class InsightOpsDbContext : DbContext
+    public class cratespaceDbContext : DbContext
     {
-        private readonly ILogger<InsightOpsDbContext> _logger;
+        private readonly ILogger<cratespaceDbContext> _logger;
 
-        public InsightOpsDbContext(
-            DbContextOptions<InsightOpsDbContext> options,
-            ILogger<InsightOpsDbContext> logger) : base(options)
+        public cratespaceDbContext(
+            DbContextOptions<cratespaceDbContext> options,
+            ILogger<cratespaceDbContext> logger) : base(options)
         {
             _logger = logger;
         }
@@ -22,7 +22,7 @@ namespace CrateSpace.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Set default schema for all tables
-            modelBuilder.HasDefaultSchema("insightops");
+            modelBuilder.HasDefaultSchema("cratespace");
 
             try
             {
@@ -61,7 +61,7 @@ namespace CrateSpace.Data
                         .HasDatabaseName("IX_Orders_OrderDate");
 
                     // Table configuration
-                    entity.ToTable("Orders", schema: "insightops", b => b.HasComment("Stores all order information"));
+                    entity.ToTable("Orders", schema: "cratespace", b => b.HasComment("Stores all order information"));
                 });
 
                 // Configure InventoryItem entity
@@ -104,7 +104,7 @@ namespace CrateSpace.Data
                         .HasDatabaseName("IX_InventoryItems_Quantity");
 
                     // Table configuration
-                    entity.ToTable("InventoryItems", schema: "insightops", tb =>
+                    entity.ToTable("InventoryItems", schema: "cratespace", tb =>
                     {
                         tb.HasComment("Stores inventory item information");
                     });

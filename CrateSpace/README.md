@@ -1,6 +1,6 @@
-﻿# InsightOps Monolithic Application - Azure Deployment Guide
+﻿# cratespace Monolithic Application - Azure Deployment Guide
 
-This guide explains how to deploy the InsightOps monolithic application to Azure as part of Phase 1 (Lift & Shift) of our cloud migration strategy.
+This guide explains how to deploy the cratespace monolithic application to Azure as part of Phase 1 (Lift & Shift) of our cloud migration strategy.
 
 ## Prerequisites
 
@@ -15,19 +15,19 @@ This guide explains how to deploy the InsightOps monolithic application to Azure
 
 1. **Create Resource Group**:
    - Navigate to Resource Groups in the Azure Portal
-   - Click "Create" and provide a name (e.g., "insightops-rg")
+   - Click "Create" and provide a name (e.g., "cratespace-rg")
    - Select your region and click "Review + create"
 
 2. **Create Virtual Network**:
    - Navigate to Virtual Networks
-   - Click "Create" and provide a name (e.g., "insightops-vnet")
+   - Click "Create" and provide a name (e.g., "cratespace-vnet")
    - Configure IP address space (e.g., 10.0.0.0/16)
    - Create a subnet (e.g., "default", 10.0.0.0/24)
    - Click "Review + create"
 
 3. **Create Network Security Group**:
    - Navigate to Network Security Groups
-   - Click "Create" and provide a name (e.g., "insightops-nsg")
+   - Click "Create" and provide a name (e.g., "cratespace-nsg")
    - Add inbound rules for:
      - SSH (port 22) for management
      - HTTP (port 80) for web traffic
@@ -37,7 +37,7 @@ This guide explains how to deploy the InsightOps monolithic application to Azure
 4. **Create a Virtual Machine**:
    - Navigate to Virtual Machines
    - Click "Create" and select "Azure virtual machine"
-   - Select your resource group and provide a name (e.g., "insightops-vm")
+   - Select your resource group and provide a name (e.g., "cratespace-vm")
    - Choose Ubuntu Server 20.04 LTS or similar
    - Select VM size (Standard_B2s recommended for testing)
    - Configure Authentication (SSH key or password)
@@ -72,7 +72,7 @@ This guide explains how to deploy the InsightOps monolithic application to Azure
    - Update the connection string in appsettings.json
    - Run the application:
      ```bash
-     cd InsightOps.Monolith
+     cd cratespace.Monolith
      dotnet run --urls=http://0.0.0.0:80
      ```
    - For production, set up a service to keep the application running
@@ -85,18 +85,18 @@ This guide explains how to deploy the InsightOps monolithic application to Azure
 #!/bin/bash
 
 # Variables
-RESOURCE_GROUP="insightops-rg"
+RESOURCE_GROUP="cratespace-rg"
 LOCATION="eastus"
-VNET_NAME="insightops-vnet"
-NSG_NAME="insightops-nsg"
-VM_NAME="insightops-vm"
+VNET_NAME="cratespace-vnet"
+NSG_NAME="cratespace-nsg"
+VM_NAME="cratespace-vm"
 VM_SIZE="Standard_B2s"
-ADMIN_USERNAME="insightopsadmin"
+ADMIN_USERNAME="cratespaceadmin"
 SSH_KEY_PATH="~/.ssh/id_rsa.pub"
-POSTGRES_SERVER="insightops-postgres"
+POSTGRES_SERVER="cratespace-postgres"
 POSTGRES_ADMIN="postgresadmin"
 POSTGRES_PASSWORD="YourStrongPasswordHere123!"  # Change this
-DB_NAME="insightops_db"
+DB_NAME="cratespace_db"
 
 # Login to Azure
 echo "Logging in to Azure..."
@@ -211,12 +211,12 @@ ssh $ADMIN_USERNAME@$VM_IP << 'EOF'
   sudo apt install -y git
 
   # Create app directory
-  mkdir -p ~/insightops
+  mkdir -p ~/cratespace
 EOF
 
 echo "Deployment completed successfully!"
 echo "Next steps:"
-echo "1. Clone your repo to the VM: git clone your-repo-url ~/insightops"
+echo "1. Clone your repo to the VM: git clone your-repo-url ~/cratespace"
 echo "2. Update connection string in appsettings.json"
 echo "3. Run the application or set up a service"
 echo "4. Access your application at http://$VM_IP"
@@ -235,15 +235,15 @@ After the infrastructure is set up, you'll need to deploy your application to th
 
 ```bash
 # Clone your repository (replace with your actual repository URL)
-git clone https://github.com/your-username/insightops.git ~/insightops
+git clone https://github.com/your-username/cratespace.git ~/cratespace
 
 # Navigate to the application directory
-cd ~/insightops
+cd ~/cratespace
 
 # Update the connection string in appsettings.json
 # Replace [SERVER] with your PostgreSQL server name or IP
 # Replace [USERNAME] and [PASSWORD] with your credentials
-sed -i 's/"DefaultConnection": ".*"/"DefaultConnection": "Host=[SERVER];Database=insightops_db;Username=[USERNAME];Password=[PASSWORD]"/' appsettings.json
+sed -i 's/"DefaultConnection": ".*"/"DefaultConnection": "Host=[SERVER];Database=cratespace_db;Username=[USERNAME];Password=[PASSWORD]"/' appsettings.json
 
 # Build and run the application
 dotnet build
@@ -260,12 +260,12 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "insightops-rg"
+  name     = "cratespace-rg"
   location = "eastus"
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = "insightops-vnet"
+  name                = "cratespace-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -279,7 +279,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = "insightops-nsg"
+  name                = "cratespace-nsg"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -326,7 +326,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
 }
 
 resource "azurerm_public_ip" "publicip" {
-  name                = "insightops-publicip"
+  name                = "cratespace-publicip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
@@ -334,7 +334,7 @@ resource "azurerm_public_ip" "publicip" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  name                = "insightops-nic"
+  name                = "cratespace-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -347,17 +347,17 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "insightops-vm"
+  name                = "cratespace-vm"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   size                = "Standard_B2s"
-  admin_username      = "insightopsadmin"
+  admin_username      = "cratespaceadmin"
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
 
   admin_ssh_key {
-    username   = "insightopsadmin"
+    username   = "cratespaceadmin"
     public_key = file("~/.ssh/id_rsa.pub")
   }
 
@@ -375,7 +375,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 }
 
 resource "azurerm_postgresql_server" "postgres" {
-  name                = "insightops-postgres"
+  name                = "cratespace-postgres"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -393,7 +393,7 @@ resource "azurerm_postgresql_server" "postgres" {
 }
 
 resource "azurerm_postgresql_database" "database" {
-  name                = "insightops_db"
+  name                = "cratespace_db"
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_postgresql_server.postgres.name
   charset             = "UTF8"
@@ -436,23 +436,23 @@ To ensure your application runs continuously and starts automatically when the V
 1. **Create a service file**:
 
 ```bash
-sudo nano /etc/systemd/system/insightops.service
+sudo nano /etc/systemd/system/cratespace.service
 ```
 
 2. **Add the following configuration**:
 
 ```
 [Unit]
-Description=InsightOps Monolithic Application
+Description=cratespace Monolithic Application
 After=network.target
 
 [Service]
-WorkingDirectory=/home/insightopsadmin/insightops
+WorkingDirectory=/home/cratespaceadmin/cratespace
 ExecStart=/usr/bin/dotnet run --urls=http://0.0.0.0:80
 Restart=always
 RestartSec=10
-SyslogIdentifier=insightops
-User=insightopsadmin
+SyslogIdentifier=cratespace
+User=cratespaceadmin
 Environment=ASPNETCORE_ENVIRONMENT=Production
 
 [Install]
@@ -462,9 +462,9 @@ WantedBy=multi-user.target
 3. **Enable and start the service**:
 
 ```bash
-sudo systemctl enable insightops.service
-sudo systemctl start insightops.service
-sudo systemctl status insightops.service
+sudo systemctl enable cratespace.service
+sudo systemctl start cratespace.service
+sudo systemctl status cratespace.service
 ```
 
 ## Post-Deployment Verification
@@ -473,12 +473,12 @@ After deploying the application, verify that everything is working correctly:
 
 1. **Check the service status**:
    ```bash
-   sudo systemctl status insightops.service
+   sudo systemctl status cratespace.service
    ```
 
 2. **View application logs**:
    ```bash
-   sudo journalctl -u insightops.service
+   sudo journalctl -u cratespace.service
    ```
 
 3. **Access the application in a web browser**:

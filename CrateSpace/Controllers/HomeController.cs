@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using CrateSpace.Interfaces;
 using CrateSpace.Models.ViewModels;
 using System.Diagnostics;
+using cratespace.Monolith.Models.ViewModels;
 
 namespace CrateSpace.Controllers
 {

@@ -1,7 +1,5 @@
 ﻿// Models/ViewModels/DashboardViewModel.cs
-using CrateSpace.Models.Inventory;
-
-namespace CrateSpace.Models.ViewModels
+namespace cratespace.Monolith.Models.ViewModels
 {
     public class DashboardViewModel
     {
@@ -13,7 +11,7 @@ namespace CrateSpace.Models.ViewModels
         public int PendingOrdersCount { get; set; }
         public decimal TotalOrdersValue { get; set; }
 
-        public List<LowStockAlert> LowStockAlerts { get; set; } = new List<LowStockAlert>();
-        public List<Order.Order> RecentOrders { get; set; } = new List<Order.Order>();
+        public List<CrateSpace.Models.Inventory.LowStockAlert> LowStockAlerts { get; set; } = new List<CrateSpace.Models.Inventory.LowStockAlert>();
+        public List<CrateSpace.Models.Order.Order> RecentOrders { get; set; } = new List<CrateSpace.Models.Order.Order>();
     }
 }
