@@ -1,0 +1,6 @@
+@CrateSpace_HostAddress = http://localhost:5208
+
+GET {{CrateSpace_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

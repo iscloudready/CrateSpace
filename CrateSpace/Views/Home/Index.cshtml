@@ -1,0 +1,170 @@
+﻿// Views/Home/Index.cshtml
+@model InsightOps.Monolith.Models.ViewModels.DashboardViewModel
+@
+{
+
+    ViewData
+[
+"Title"
+]
+ 
+=
+ 
+"Dashboard"
+;
+
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">InsightOps Dashboard</h1>
+    <p>Monolithic version of the InsightOps application.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Inventory Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Total Items:</span>
+                            <span class="badge bg-primary">@Model.TotalInventoryItems</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Inventory Value:</span>
+                            <span class="badge bg-success">@Model.TotalInventoryValue.ToString("C")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Low Stock Items:</span>
+                    <span class="badge bg-danger">@Model.LowStockItemsCount</span>
+                </div>
+                <a asp-controller="Inventory" asp-action="Index" class="btn btn-primary">View Inventory</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Orders Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Total Orders:</span>
+                            <span class="badge bg-primary">@Model.TotalOrders</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Orders Value:</span>
+                            <span class="badge bg-success">@Model.TotalOrdersValue.ToString("C")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Pending Orders:</span>
+                    <span class="badge bg-warning text-dark">@Model.PendingOrdersCount</span>
+                </div>
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-primary">View Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Low Stock Alerts</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.LowStockAlerts.Any())
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Current</th>
+                                <th>Minimum</th>
+                                <th>Alert Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var alert in Model.LowStockAlerts)
+                            {
+                                <tr>
+                                    <td>@alert.ItemName</td>
+                                    <td>@alert.CurrentQuantity</td>
+                                    <td>@alert.MinimumQuantity</td>
+                                    <td>
+                                        <span class="badge @(alert.AlertLevel == "Critical" ? "bg-danger" : 
+                                                             alert.AlertLevel == "High" ? "bg-warning text-dark" : 
+                                                             "bg-info text-dark")">
+                                            @alert.AlertLevel
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-success">No low stock alerts.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Recent Orders</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentOrders.Any())
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td>@order.ItemName</td>
+                                    <td>@order.Quantity</td>
+                                    <td>
+                                        <span class="badge @(order.Status == "Completed" ? "bg-success" : 
+                                                           order.Status == "Cancelled" ? "bg-danger" : 
+                                                           "bg-warning text-dark")">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td>@order.OrderDate.ToString("g")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No recent orders.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
