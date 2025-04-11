@@ -1,5 +1,5 @@
 ﻿// Models/Inventory/InventoryItem.cs
-namespace InsightOps.Monolith.Models.Inventory
+namespace CrateSpace.Models.Inventory
 {
     public class InventoryItem
     {

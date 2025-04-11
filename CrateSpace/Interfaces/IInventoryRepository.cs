@@ -1,7 +1,7 @@
 ﻿// Interfaces/IInventoryRepository.cs
-using InsightOps.Monolith.Models.Inventory;
+using CrateSpace.Models.Inventory;
 
-namespace InsightOps.Monolith.Interfaces
+namespace CrateSpace.Interfaces
 {
     public interface IInventoryRepository
     {

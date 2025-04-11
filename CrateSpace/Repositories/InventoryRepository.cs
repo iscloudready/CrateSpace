@@ -1,10 +1,10 @@
 ﻿// Repositories/InventoryRepository.cs (continued)
 using Microsoft.EntityFrameworkCore;
-using InsightOps.Monolith.Data;
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.Inventory;
+using CrateSpace.Data;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.Inventory;
 
-namespace InsightOps.Monolith.Repositories
+namespace CrateSpace.Repositories
 {
     public class InventoryRepository : IInventoryRepository
     {

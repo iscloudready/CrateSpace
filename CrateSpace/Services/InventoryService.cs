@@ -1,8 +1,8 @@
 ﻿// Services/InventoryService.cs
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.Inventory;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.Inventory;
 
-namespace InsightOps.Monolith.Services
+namespace CrateSpace.Services
 {
     public class InventoryService : IInventoryService
     {

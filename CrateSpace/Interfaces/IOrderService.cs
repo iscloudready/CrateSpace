@@ -1,8 +1,8 @@
 ﻿// Interfaces/IOrderService.cs
-using InsightOps.Monolith.Models.Order;
-using InsightOps.Monolith.Models.Order.Responses;
+using CrateSpace.Models.Order;
+using CrateSpace.Models.Order.Responses;
 
-namespace InsightOps.Monolith.Interfaces
+namespace CrateSpace.Interfaces
 {
     public interface IOrderService
     {

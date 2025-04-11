@@ -1,9 +1,9 @@
 ﻿// Services/OrderService.cs
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.Order;
-using InsightOps.Monolith.Models.Order.Responses;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.Order;
+using CrateSpace.Models.Order.Responses;
 
-namespace InsightOps.Monolith.Services
+namespace CrateSpace.Services
 {
     public class OrderService : IOrderService
     {

@@ -1,11 +1,11 @@
 ﻿// Controllers/OrdersController.cs
 using Microsoft.AspNetCore.Mvc;
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.Order;
-using InsightOps.Monolith.Models.ViewModels;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.Order;
+using CrateSpace.Models.ViewModels;
 using System.Diagnostics;
 
-namespace InsightOps.Monolith.Controllers
+namespace CrateSpace.Controllers
 {
     public class OrdersController : Controller
     {

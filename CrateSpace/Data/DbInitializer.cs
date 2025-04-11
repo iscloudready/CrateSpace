@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using InsightOps.Monolith.Models.Inventory;
-using InsightOps.Monolith.Models.Order;
+using CrateSpace.Models.Inventory;
+using CrateSpace.Models.Order;
 using CrateSpace.Models.Inventory;
 using CrateSpace.Models.Order;
 
-namespace InsightOps.Monolith.Data
+namespace CrateSpace.Data
 {
     public static class DbInitializer
     {

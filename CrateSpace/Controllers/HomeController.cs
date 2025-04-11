@@ -1,10 +1,10 @@
 ﻿// Controllers/HomeController.cs (continued)
 using Microsoft.AspNetCore.Mvc;
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.ViewModels;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.ViewModels;
 using System.Diagnostics;
 
-namespace InsightOps.Monolith.Controllers
+namespace CrateSpace.Controllers
 {
     public class HomeController : Controller
     {

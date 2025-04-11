@@ -1,7 +1,7 @@
 ﻿// Interfaces/IOrderRepository.cs
-using InsightOps.Monolith.Models.Order;
+using CrateSpace.Models.Order;
 
-namespace InsightOps.Monolith.Interfaces
+namespace CrateSpace.Interfaces
 {
     public interface IOrderRepository
     {

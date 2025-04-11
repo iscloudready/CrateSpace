@@ -1,7 +1,7 @@
 ﻿// Controllers/HealthController.cs
 using Microsoft.AspNetCore.Mvc;
 
-namespace InsightOps.Monolith.Controllers
+namespace CrateSpace.Controllers
 {
     [ApiController]
     [Route("[controller]")]

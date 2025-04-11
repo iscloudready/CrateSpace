@@ -1,5 +1,5 @@
 ﻿// Models/ViewModels/InventoryViewModel.cs
-namespace InsightOps.Monolith.Models.ViewModels
+namespace CrateSpace.Models.ViewModels
 {
     public class InventoryViewModel
     {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using InsightOps.Monolith.Data;
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Repositories;
-using InsightOps.Monolith.Services;
+using CrateSpace.Data;
+using CrateSpace.Interfaces;
+using CrateSpace.Repositories;
+using CrateSpace.Services;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);

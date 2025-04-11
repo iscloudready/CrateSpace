@@ -1,11 +1,11 @@
 ﻿// Controllers/InventoryController.cs
 using Microsoft.AspNetCore.Mvc;
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.Inventory;
-using InsightOps.Monolith.Models.ViewModels;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.Inventory;
+using CrateSpace.Models.ViewModels;
 using System.Diagnostics;
 
-namespace InsightOps.Monolith.Controllers
+namespace CrateSpace.Controllers
 {
     public class InventoryController : Controller
     {

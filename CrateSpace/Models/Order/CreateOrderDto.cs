@@ -1,7 +1,7 @@
 ﻿// Models/Order/CreateOrderDto.cs
 using System.ComponentModel.DataAnnotations;
 
-namespace InsightOps.Monolith.Models.Order
+namespace CrateSpace.Models.Order
 {
     public class CreateOrderDto
     {

@@ -1,10 +1,10 @@
 ﻿// Repositories/OrderRepository.cs
 using Microsoft.EntityFrameworkCore;
-using InsightOps.Monolith.Data;
-using InsightOps.Monolith.Interfaces;
-using InsightOps.Monolith.Models.Order;
+using CrateSpace.Data;
+using CrateSpace.Interfaces;
+using CrateSpace.Models.Order;
 
-namespace InsightOps.Monolith.Repositories
+namespace CrateSpace.Repositories
 {
     public class OrderRepository : IOrderRepository
     {

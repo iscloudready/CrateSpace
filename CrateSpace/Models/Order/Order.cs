@@ -1,5 +1,5 @@
 ﻿// Models/Order/Order.cs
-namespace InsightOps.Monolith.Models.Order
+namespace CrateSpace.Models.Order
 {
     public class Order
     {

@@ -1,7 +1,7 @@
 ﻿// Models/ViewModels/DashboardViewModel.cs
-using InsightOps.Monolith.Models.Inventory;
+using CrateSpace.Models.Inventory;
 
-namespace InsightOps.Monolith.Models.ViewModels
+namespace CrateSpace.Models.ViewModels
 {
     public class DashboardViewModel
     {

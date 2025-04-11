@@ -1,5 +1,5 @@
 ﻿// Models/Order/Responses/OrderStatusResponse.cs
-namespace InsightOps.Monolith.Models.Order.Responses
+namespace CrateSpace.Models.Order.Responses
 {
     public class OrderStatusResponse
     {
