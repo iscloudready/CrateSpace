@@ -14,6 +14,8 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 // Add services to the container
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
+
 // Configure database
 builder.Services.AddDbContext<cratespaceDbContext>((serviceProvider, options) =>
 {

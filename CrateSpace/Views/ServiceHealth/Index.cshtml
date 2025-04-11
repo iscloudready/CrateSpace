@@ -1,0 +1,44 @@
+﻿@model cratespace.Monolith.Models.ViewModels.HealthStatusViewModel
+@{
+    ViewData["Title"] = "Service Health";
+}
+
+<h1 class="mb-4">Service Health Dashboard</h1>
+
+@foreach (var group in Model.ServiceGroups)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@group.Name</h5>
+        </div>
+        <div class="card-body">
+            @foreach (var service in group.Services)
+            {
+                <div class="mb-3 border-bottom pb-2">
+                    <h6>@service.Name</h6>
+                    <p>Status: <span class="badge bg-@GetStatusColor(service.Status)">@service.Status</span></p>
+                    <p>@service.Details</p>
+                    <ul>
+                        @foreach (var metric in service.Metrics)
+                        {
+                            <li><strong>@metric.Key:</strong> @metric.Value</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<p class="text-muted">Last Updated: @Model.LastUpdated.ToString("g")</p>
+
+@functions {
+    private string GetStatusColor(string status) =>
+        status switch
+        {
+            "Healthy" => "success",
+            "Unhealthy" => "danger",
+            "Degraded" => "warning",
+            _ => "secondary"
+        };
+}
