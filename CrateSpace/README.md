@@ -511,3 +511,8 @@ To complete Phase 1 (Week 1, Friday), create the following documentation:
    - How to restart services
 
 This completes the deployment guide for Phase 1 of our Azure migration strategy.
+
+
+dotnet ef migrations remove --project CrateSpace
+dotnet ef migrations add InitialCreate --project CrateSpace
+dotnet ef database update --project CrateSpace
