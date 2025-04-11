@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Logging;
 using CrateSpace.Models.Inventory;
 using CrateSpace.Models.Order;
-using CrateSpace.Models.Inventory;
-using CrateSpace.Models.Order;
 
 namespace CrateSpace.Data
 {
