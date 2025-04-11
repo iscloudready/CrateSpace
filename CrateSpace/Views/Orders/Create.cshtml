@@ -1,5 +1,174 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model InsightOps.Monolith.Models.Order.CreateOrderDto
 @{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Create New Order</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Order Details</h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="ItemName" class="form-label">Item</label>
+                            <select asp-for="ItemName" class="form-select" required>
+                                <option value="">-- Select Item --</option>
+                                @foreach (var item in ViewBag.InventoryItems)
+                                {
+                                    <option value="@item.Name" data-price="@item.Price" data-stock="@item.Quantity">
+                                        @item.Name - @item.Price.ToString("C") (@item.Quantity in stock)
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="ItemName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Quantity" class="form-label">Quantity</label>
+                            <input asp-for="Quantity" class="form-control" required min="1" type="number" id="quantity" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                            <div id="quantityFeedback" class="invalid-feedback">
+                                Quantity exceeds available stock.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Price Per Unit</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="unitPrice" readonly />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Estimated Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" id="totalPrice" readonly />
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info" id="stockWarning" style="display: none;">
+                            <i class="fas fa-info-circle"></i> <span id="stockWarningText"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Create Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Order Summary</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h5>Selected Item</h5>
+                        <p id="selectedItem" class="lead mb-0">-</p>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Quantity:</span>
+                        <span id="summaryQuantity">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Unit Price:</span>
+                        <span id="summaryUnitPrice">-</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold" id="summaryTotal">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Order Status</h6>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <i class="fas fa-info-circle text-info"></i>
+                        New orders will be created with <span class="badge bg-warning text-dark">Pending</span> status.
+                    </p>
+                    <p>
+                        <i class="fas fa-check-circle text-success"></i>
+                        Inventory will be automatically adjusted when the order is placed.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            function updateOrderSummary() {
+                const selectedOption = $("#ItemName option:selected");
+                const itemName = selectedOption.text().split(' - ')[0];
+                const unitPrice = selectedOption.data('price') || 0;
+                const quantity = $("#quantity").val() || 0;
+                const availableStock = selectedOption.data('stock') || 0;
+                const total = unitPrice * quantity;
+
+                // Update form fields
+                $("#unitPrice").val(unitPrice.toFixed(2));
+                $("#totalPrice").val(total.toFixed(2));
+
+                // Update summary card
+                $("#selectedItem").text(itemName !== "-- Select Item --" ? itemName : "-");
+                $("#summaryQuantity").text(quantity > 0 ? quantity : "-");
+                $("#summaryUnitPrice").text(unitPrice > 0 ? `$${unitPrice.toFixed(2)}` : "-");
+                $("#summaryTotal").text(total > 0 ? `$${total.toFixed(2)}` : "-");
+
+                // Handle stock warning
+                if (quantity > 0 && itemName !== "-- Select Item --") {
+                    if (quantity > availableStock) {
+                        $("#stockWarning").show();
+                        $("#stockWarningText").text(`Warning: Order quantity (${quantity}) exceeds available stock (${availableStock}).`);
+                        $("#quantity").addClass("is-invalid");
+                        $("#submitBtn").attr("disabled", true);
+                    } else if (quantity > availableStock * 0.8) {
+                        $("#stockWarning").show();
+                        $("#stockWarningText").text(`Note: This order will use ${((quantity / availableStock) * 100).toFixed(0)}% of the available stock.`);
+                        $("#quantity").removeClass("is-invalid");
+                        $("#submitBtn").attr("disabled", false);
+                    } else {
+                        $("#stockWarning").hide();
+                        $("#quantity").removeClass("is-invalid");
+                        $("#submitBtn").attr("disabled", false);
+                    }
+                } else {
+                    $("#stockWarning").hide();
+                    $("#quantity").removeClass("is-invalid");
+                }
+            }
+
+            // Attach change event handlers
+            $("#ItemName, #quantity").on("change keyup", updateOrderSummary);
+
+            // Initial update
+            updateOrderSummary();
+        });
+    </script>
 }

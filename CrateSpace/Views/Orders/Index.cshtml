@@ -1,5 +1,216 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model InsightOps.Monolith.Models.ViewModels.OrderViewModel
 @{
+    ViewData["Title"] = "Orders Management";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Orders Management</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createOrderModal">
+            <i class="fas fa-plus"></i> New Order
+        </button>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <!-- Pending Orders Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-warning h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Pending Orders</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">
+                                @Model.Orders.Count(o => o.Status == "Pending")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Orders Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Total Orders</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.Orders.Count()</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Value Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">Total Value</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">
+                                @Model.Orders.Sum(o => o.TotalPrice).ToString("C")
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Table Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-primary">Orders List</h6>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary" onclick="exportOrders()">
+                    <i class="fas fa-download me-1"></i>Export
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="ordersTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Order Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <tr>
+                                <td>#@order.Id.ToString("D5")</td>
+                                <td>@order.ItemName</td>
+                                <td class="text-center">@order.Quantity</td>
+                                <td class="text-end">@order.TotalPrice.ToString("C")</td>
+                                <td>
+                                    <span class="badge @(order.Status switch {
+                                        "Completed" => "bg-success",
+                                        "Cancelled" => "bg-danger",
+                                        "Pending" => "bg-warning text-dark",
+                                        _ => "bg-secondary"
+                                    })">@order.Status</span>
+                                </td>
+                                <td>@order.OrderDate.ToString("g")</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="/Orders/Details/@order.Id" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <button class="btn btn-sm btn-success" onclick="completeOrder(@order.Id)" title="Mark as completed">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="cancelOrder(@order.Id)" title="Cancel order">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Order Modal -->
+<div class="modal fade" id="createOrderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="NewOrder.ItemName" class="form-label">Item</label>
+                        <select asp-for="NewOrder.ItemName" class="form-select" required>
+                            <option value="">-- Select Item --</option>
+                            @foreach (var item in Model.AvailableItems)
+                            {
+                                <option value="@item.Name">@item.Name (@item.Quantity in stock) - @item.Price.ToString("C")</option>
+                            }
+                        </select>
+                        <span asp-validation-for="NewOrder.ItemName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewOrder.Quantity" class="form-label">Quantity</label>
+                        <input asp-for="NewOrder.Quantity" class="form-control" required min="1" type="number" />
+                        <span asp-validation-for="NewOrder.Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Status Update Forms (hidden) -->
+<form id="completeOrderForm" asp-action="UpdateStatus" method="post">
+    <input type="hidden" id="completeOrderId" name="id" />
+    <input type="hidden" name="status" value="Completed" />
+</form>
+
+<form id="cancelOrderForm" asp-action="Cancel" method="post">
+    <input type="hidden" id="cancelOrderId" name="id" />
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ordersTable').DataTable({
+                order: [[5, 'desc']], // Sort by date descending
+                pageLength: 25,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search orders..."
+                }
+            });
+        });
+
+        function completeOrder(orderId) {
+            if (confirm('Are you sure you want to mark this order as completed?')) {
+                $('#completeOrderId').val(orderId);
+                $('#completeOrderForm').submit();
+            }
+        }
+
+        function cancelOrder(orderId) {
+            if (confirm('Are you sure you want to cancel this order?')) {
+                $('#cancelOrderId').val(orderId);
+                $('#cancelOrderForm').submit();
+            }
+        }
+
+        function exportOrders() {
+            // Implement export functionality
+            alert('Export feature coming soon');
+        }
+    </script>
 }

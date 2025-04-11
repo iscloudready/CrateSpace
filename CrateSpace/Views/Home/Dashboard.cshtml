@@ -1,5 +1,230 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model InsightOps.Monolith.Models.ViewModels.DashboardViewModel
 @{
+    ViewData["Title"] = "Operations Dashboard";
+}
+
+<div class="container-fluid px-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Operations Control Center</h1>
+            <p class="text-muted">Real-time Service Performance & Health</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" id="refreshDashboard">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Alert Container for Errors -->
+    <div id="alertContainer" class="mb-4"></div>
+
+    <!-- Metrics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-primary h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Active Orders</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.PendingOrdersCount</div>
+                            <div class="text-muted small">@(Model.TotalOrders) total orders</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-success h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">Inventory Items</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.TotalInventoryItems</div>
+                            <div class="text-danger small">@(Model.LowStockItemsCount) items low on stock</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-warehouse fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-info h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">System Health</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">Healthy</div>
+                            <div class="text-muted small">All services operational</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-heartbeat fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-left-warning h-100 shadow">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Total Value</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">@Model.TotalInventoryValue.ToString("C")</div>
+                            <div class="text-muted small">Current inventory valuation</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Status and Resources -->
+    <div class="row mb-4">
+        <!-- Recent Orders Table -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-primary">Recent Orders</h6>
+                    <a href="/Orders" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="recentOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model.RecentOrders)
+                                {
+                                    <tr>
+                                        <td><a href="/Orders/Details/@order.Id">#@order.Id.ToString("D4")</a></td>
+                                        <td>@order.ItemName</td>
+                                        <td>@order.Quantity</td>
+                                        <td>@order.TotalPrice.ToString("C")</td>
+                                        <td>
+                                            <span class="badge @(order.Status == "Completed" ? "bg-success" :
+                                                                order.Status == "Cancelled" ? "bg-danger" :
+                                                                "bg-warning text-dark")">
+                                                @order.Status
+                                            </span>
+                                        </td>
+                                        <td>@order.OrderDate.ToString("g")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Usage -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Low Stock Alerts</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.LowStockAlerts.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Current</th>
+                                        <th>Alert Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var alert in Model.LowStockAlerts)
+                                    {
+                                        <tr>
+                                            <td><a href="/Inventory/Details/@alert.ItemId">@alert.ItemName</a></td>
+                                            <td>@alert.CurrentQuantity</td>
+                                            <td>
+                                                <span class="badge @(alert.AlertLevel == "Critical" ? "bg-danger" :
+                                                                    alert.AlertLevel == "High" ? "bg-warning text-dark" :
+                                                                    "bg-info text-dark")">
+                                                    @alert.AlertLevel
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="/Inventory/LowStock" class="btn btn-danger btn-sm">View All Low Stock</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center p-4">
+                            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                            <p class="mb-0">No low stock items</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/Orders/Create" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus-circle me-1"></i> New Order
+                        </a>
+                        <a href="/Inventory/Create" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus-circle me-1"></i> Add Inventory Item
+                        </a>
+                        <a href="/ServiceHealth" class="btn btn-info btn-sm text-white">
+                            <i class="fas fa-heartbeat me-1"></i> System Health Check
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#recentOrdersTable').DataTable({
+                ordering: false,
+                paging: false,
+                searching: false,
+                info: false
+            });
+
+            // Refresh dashboard button
+            $('#refreshDashboard').click(function() {
+                location.reload();
+            });
+        });
+    </script>
 }

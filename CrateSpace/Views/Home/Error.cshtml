@@ -1,67 +1,59 @@
-﻿// Views/Home/Error.cshtml
-@model CrateSpace.Controllers.ErrorViewModel
-@
-{
-
-    ViewData
-[
-"Title"
-]
- 
-=
- 
-"Error"
-;
-
+﻿<!-- Views/Shared/Error.cshtml -->
+@model InsightOps.Monolith.Controllers.ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
 }
 
+<div class="container-fluid px-4">
+    <div class="text-center mt-5">
+        <div class="error-icon mb-4">
+            <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
+        </div>
+        <h1 class="display-4 text-danger">Error</h1>
+        <p class="lead">An error occurred while processing your request.</p>
 
-<h1 class="text-danger">Error</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+        @if (Model.ShowRequestId)
+        {
+            <p class="text-muted">
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
 
-@if
- 
-(
-Model
-.
-ShowRequestId
-)
-
-{
-
-    
-<
-p
->
-
-        
-<
-strong
->
-Request ID:
-</
-strong
->
- 
-<
-code
->
-@
-Model
-.
-RequestId
-</
-code
->
-
-    
-</
-p
->
-
-}
-
-
-<div class="mt-4">
-    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Return to Dashboard</a>
+        <div class="mt-4">
+            <a href="javascript:history.back()" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-home"></i> Return to Dashboard
+            </a>
+        </div>
+    </div>
 </div>
+
+<!-- Views/Shared/NotFound.cshtml -->
+@{
+    ViewData["Title"] = "Not Found";
+}
+
+<div class="container-fluid px-4">
+    <div class="text-center mt-5">
+        <div class="error-icon mb-4">
+            <i class="fas fa-search fa-5x text-primary"></i>
+        </div>
+        <h1 class="display-4">404 Not Found</h1>
+        <p class="lead">The resource you are looking for could not be found.</p>
+
+        <div class="mt-4">
+            <a href="javascript:history.back()" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-home"></i> Return to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Views/Shared/_ValidationScriptsPartial.cshtml -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

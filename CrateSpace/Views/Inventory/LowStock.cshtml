@@ -1,0 +1,134 @@
+﻿@model IEnumerable<InsightOps.Monolith.Models.Inventory.LowStockAlert>
+@{
+    ViewData["Title"] = "Low Stock Alerts";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Low Stock Alerts</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Inventory
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-primary">
+                <i class="fas fa-exclamation-triangle text-danger me-1"></i>
+                Items Requiring Attention
+            </h6>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="lowStockTable">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Current Quantity</th>
+                                <th>Minimum Quantity</th>
+                                <th>Quantity to Reorder</th>
+                                <th>Alert Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var alert in Model)
+                            {
+                                <tr>
+                                    <td>@alert.ItemName</td>
+                                    <td>@alert.CurrentQuantity</td>
+                                    <td>@alert.MinimumQuantity</td>
+                                    <td>@alert.QuantityToReorder</td>
+                                    <td>
+                                        <span class="badge @(alert.AlertLevel == "Critical" ? "bg-danger" :
+                                                           alert.AlertLevel == "High" ? "bg-warning text-dark" :
+                                                           "bg-info text-dark")">
+                                            @alert.AlertLevel
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="/Inventory/Details/@alert.ItemId" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-success"
+                                                    data-bs-toggle="modal" data-bs-target="#restockModal"
+                                                    data-item-id="@alert.ItemId"
+                                                    data-item-name="@alert.ItemName"
+                                                    data-reorder="@alert.QuantityToReorder">
+                                                <i class="fas fa-plus-circle"></i> Restock
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center p-4">
+                    <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                    <p class="mb-0">No low stock items! Inventory levels are healthy.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Restock Modal -->
+<div class="modal fade" id="restockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Restock Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateStock" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="restockItemId" name="id" />
+                    <div class="mb-3">
+                        <p>Item: <span id="restockItemName" class="fw-bold"></span></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">New Quantity</label>
+                        <input type="number" id="quantity" name="quantity" class="form-control" required min="1" />
+                        <small class="text-muted">Recommended restock amount: <span id="recommendedAmount"></span></small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Restock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#lowStockTable').DataTable({
+                order: [[4, 'desc']], // Sort by alert level by default
+                pageLength: 25
+            });
+
+            // Handle restock modal
+            $('#restockModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const itemId = button.data('item-id');
+                const itemName = button.data('item-name');
+                const reorderAmount = button.data('reorder');
+
+                const modal = $(this);
+                modal.find('#restockItemId').val(itemId);
+                modal.find('#restockItemName').text(itemName);
+                modal.find('#recommendedAmount').text(reorderAmount);
+                modal.find('#quantity').val(reorderAmount);
+            });
+        });
+    </script>
+}
